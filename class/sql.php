@@ -33,6 +33,7 @@ class Sql extends PDO{
         return $stmt;
     }
 
+   
     // : array ao final  Define o tipo de retorno 
     public function select ($rawQuery, $params = array()) : array{
         $stmt = $this->query($rawQuery, $params);
