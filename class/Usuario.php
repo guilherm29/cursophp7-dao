@@ -31,6 +31,10 @@ public function setDtcadastro($value){
     $this->dtcadastro = $value;
 }
 
+public function __construct($login="", $password=""){
+    $this-> setDeslogin($login);
+    $this->setDessenha ($password);
+}
 
 public function loadId($id){
     $sql = new Sql();
@@ -39,14 +43,10 @@ public function loadId($id){
     ));
 
     if (count($results) > 0) {
-       $row = $results[0];
-       $this -> setIdusuario($row['idusuario']);
-       $this -> setDeslogin($row['deslogin']);
-       $this -> setDessenha($row['dessenha']);
-       $this -> setDtcadastro(new DateTime($row['dtcadastro']));
-
+        $this->setData($results[0]);
     }
 }
+
 public static function  getList(){
     $sql = new Sql();
     return $sql ->select("SELECT * FROM tb_usuario ORDER BY deslogin;");
@@ -76,14 +76,42 @@ public function login($login, $password){
 
     if (count($results) > 0) {
        $row = $results[0];
-       $this -> setIdusuario($row['idusuario']);
-       $this -> setDeslogin($row['deslogin']);
-       $this -> setDessenha($row['dessenha']);
-       $this -> setDtcadastro(new DateTime($row['dtcadastro']));
+       $this->setData($results[0]);
+
 
     }else {
-        throw new Expection ("Login e/ou senha inválidos");
+        throw new Exception ("Login e/ou senha inválidos");
     }
+}
+public function setData($data){
+    $this -> setIdusuario($data['idusuario']);
+    $this -> setDeslogin($data['deslogin']);
+    $this -> setDessenha($data['dessenha']);
+    $this -> setDtcadastro(new DateTime($data['dtcadastro']));
+}
+
+public function insert(){
+    $sql = new Sql();
+    $result = $sql -> select ("CALL sp_usuario_insert(:LOGIN, :PASSWORD)",array(
+        ':LOGIN' => $this ->getDeslogin(),
+        ':PASSWORD' => $this-> getDessenha()
+    ));
+    if (count($result[0] > 0)) {
+        # code...
+        $this->setData($result[0]);
+
+    }
+}
+
+public function update($login, $password){
+    $this -> setDeslogin($login);
+    $this -> setDessenha($password);
+    $sql = new Sql();
+    $sql -> query ("update tb_usuario set deslogin = :LOGIN, dessenha= :PASSWORD where idUsuario = :ID", array(
+        ':LOGIN' => $this -> getDeslogin(),
+        ':PASSWORD'=>$this -> getDessenha(),
+        ':ID' => $this -> getIdusuario()
+    ));
 }
 
 

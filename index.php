@@ -14,8 +14,18 @@ $root = new Usuario();
 
 //Carrega usuario usando login e senha
 
-$usuario = new Usuario();
-$usuario -> login ("joses","789456");
-echo $usuario;
+// $usuario = new Usuario();
+// $usuario -> login ("joses","789456");
+// echo $usuario;
 
+//update
+// $aluno = new Usuario("Aluno", "oprdf4");
+// $aluno -> insert();
+
+// echo $aluno;
+
+$usuario = new Usuario ();
+$usuario ->loadId(10);
+$usuario->update ("professor", "%#$%¨*(");
+echo $usuario;
 ?>
